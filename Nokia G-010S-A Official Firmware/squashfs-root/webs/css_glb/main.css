@@ -1,0 +1,75 @@
+/* vim:fenc=utf-8
+*/
+@charset "utf-8";
+body {
+    font-size: 14px;
+    font-family:"Microsoft Yahei","Arial";
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: right bottom;
+    padding:10px 10px;
+}
+td {
+    font-size: 12px;
+}
+table.wb {
+    border-collapse: collapse;
+    padding:10px 10px;
+}
+table.wb td {
+    font-size: 12px;
+    padding:5px;
+    border:1px outset rgb(131,131,131);
+}
+table.wb thead td {
+    color: #5f5f5f;
+    background-color: #e0e0e0;
+}
+td.vname {
+    color: #5f5f5f;
+    background-color: #e0e0e0;
+}
+td.ths
+{
+	background-color: #cccccc;
+	font-size:13px;
+	font-weight:bold;
+	color:#000000;
+}
+
+.buttonX {
+    margin: 1px;
+    padding: 2px 4px;
+    font-size: 14px;
+    text-align: center;
+/*
+    COLOR: #1F3E81;
+	height:22px;
+	*padding-top:3px;
+	padding-bottom:3px; 
+    border: 1px solid #BACFEB;
+    background-color: #CADAF4;
+    text-decoration : none;
+    event:expression(
+    onmouseover = function(){this.className='buttonX_over';},  
+    onmouseout = function(){this.className='buttonX';}  
+    )
+*/
+}
+.buttonX_over {
+    margin: 2px;
+    FONT-SIZE: 12px;
+    COLOR: #ffffff;
+	height:22px;
+	*padding-top:3px;
+	padding-bottom:3px; 
+    TEXT-ALIGN: center;
+    border: 1px solid #90B1DF;
+    background-color: #A3C0E8;
+}
+hr {
+    border:none;
+    border-top:1px solid #5380a1;
+    height:0;
+}
+

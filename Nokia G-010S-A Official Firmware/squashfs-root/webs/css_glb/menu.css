@@ -1,0 +1,262 @@
+body{
+    text-align:left;
+}
+
+.x_cur_main_menu img, .x_main_menu img {
+    width: 20px;
+}
+
+.x_cur_main_menu a, .x_main_menu a {
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: arial, serif, fixedsys;
+}
+
+.x_main_menu a:link {color: #000000;}
+.x_main_menu a:visited {color: #000000;}
+.x_main_menu a:active {color: #000000;}
+.x_main_menu a:hover {color: #990000;}
+
+.x_cur_main_menu a:link {color: #990000;}
+.x_cur_main_menu a:visited {color: #990000;}
+.x_cur_main_menu a:active {color: #990000;}
+.x_cur_main_menu a:hover {color: #990000;}
+
+
+.x_sub_menu a:link {color: #000000;}
+.x_sub_menu a:visited {color: #000000;}
+.x_sub_menu a:active {color: #000000;}
+.x_sub_menu a:hover {color: #990000;}
+
+.x_cur_sub_menu a:link {color: #990000;}
+.x_cur_sub_menu a:visited {color: #990000;}
+.x_cur_sub_menu a:active {color: #990000;}
+.x_cur_sub_menu a:hover {color: #990000;}
+
+#xlogout a:link {color: #990000;}
+#xlogout a:visited {color: #990000;}
+#xlogout a:active {color: #990000;}
+#xlogout a:hover {color: #990000;}
+
+#xchs a:link {color: #000000;}
+#xchs a:visited {color: #000000;}
+#xchs a:active {color: #000000;}
+#xchs a:hover {color: #990000;}
+
+#xspa a:link {color: #000000;}
+#xspa a:visited {color: #000000;}
+#xspa a:active {color: #000000;}
+#xspa a:hover {color: #990000;}
+
+.x_sub_menu a {
+    text-decoration: none;
+    font-size: 14px;
+    font-family: arial, serif, fixedsys;
+    margin-left: 10px;
+}
+
+.x_cur_sub_menu a{
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: arial, serif, fixedsys;
+    margin-left: 10px;
+}
+
+
+li.x_cur_sub_menu {
+
+    background-color: #ffffff;
+
+}
+
+#div_logo {
+    height: 68px;
+    width: 1200px;
+    font-size: 2px;
+    font-family: arial, serif, fixedsys;
+    text-align: left;
+    margin: 0px;
+}
+#div_logo1 {
+    width: 208px;
+    background: url(/img_glb/logoback.gif) repeat-x center;
+}
+#div_logo2{
+    width:18px;
+    background:url(/img_glb/leftblock.gif) no-repeat center;
+
+}
+#div_logo3 {
+    width: 810px;
+    background: url(/img_glb/midblock.gif) repeat-x center;
+}
+#div_logo4 {
+    width: 18px;
+    background: url(/img_glb/rightblock.gif) no-repeat center;
+}
+#div_pad {
+    width: 772px;
+    height: 10px;
+}
+#div_logo1, #div_logo2,#div_logo3,#div_logo4 {
+    float: left;
+    height: 68px;
+}
+#div_title {
+    width: 400px;
+}
+#div_logout {
+    width: 200px;
+}
+#div_chs {
+    width: 43px;
+}
+#div_spa{
+    width: 43px;
+}
+#div_jap {
+    width: 80px;
+}
+#div_chs,#div_spa, #div_jap{
+    float: left;
+    font-size: 14px;
+    height: 58px;
+    vertical-align: bottom;
+}
+#div_xx{
+    float: left;
+    font-size: 14px;
+    height: 58px;
+    vertical-align: bottom;
+}
+#div_yy{
+    float: right;
+}
+#div_title, #div_logout{
+    float: left;
+    height: 58px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+#xlogo {
+    height: 68px;
+    line-height: 68px;
+    text-align: center;
+}
+
+#xlogo img {
+    margin-top: 8px;
+}
+
+#vftk {
+    margin-top: 8px;
+    height: 80px;
+    width: 200px;
+}
+#mxxt {
+    margin-top: 8px;
+    height: 50px;
+    width: 200px;
+}
+#xtitle {
+    height: 58px;
+    line-height: 58px;
+    margin-left: 50px;
+    text-align: left;
+}
+#xlogout {
+    height: 58px;
+    line-height: 58px;
+    margin-right: 50px;
+    text-align: right;
+}
+
+#xlogout a {
+    text-decoration: none;
+}
+
+#div_path {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-family: arial, serif, fixedsys;
+}
+
+#div_img {
+    width: 810px;
+    height: 4px;
+    background: url(/img_glb/tabbar.gif) repeat-x center;
+}
+
+#div_left{
+    width: 208px;
+    text-align: left;
+    background-color: #efefef;
+}
+
+#div_margin{
+    width:6px;
+    background-color:#ffffff;
+}
+
+#div_content_left {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    width: 208px;
+    background-color: #efefef;
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 500px;
+}
+
+#div_menu_left {
+    width: 208px;
+    text-align: left;
+    background-color: #efefef;
+    line-height: 30px;
+}
+
+#xtitle_top {
+    vertical-align: left;
+    text-align: left;
+}
+
+#div_menu_wan_status{
+    background-color: #f4f8fd;
+    border: 2px solid #FF0000;
+    position: relative;
+    width: 185px;
+    font-size: 12px;
+    font-family: arial, serif, fixedsys;
+}
+
+#wan_status_text1 > p,
+#wan_status_text2 > p{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    font-weight:bold;
+    border-bottom: 1px solid #CEC8C8;
+    padding-bottom: 6px;
+    padding-top: 6px;
+}
+
+#wan_status_text3 > p{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    font-weight:bold;
+    padding-bottom: 6px;
+    padding-top: 6px;
+}
+
+#wan_status_value1,
+#wan_status_value2,
+#wan_status_value3{
+    font-weight:normal;
+    padding: 4px;
+}

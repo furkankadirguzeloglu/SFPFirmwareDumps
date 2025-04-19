@@ -1,0 +1,153 @@
+<!--
+ vim:fenc=utf-8
+-->
+<html>
+    <%include("html_glb/head.html")%>
+
+    <script>
+    var login_cfg = { <% login_cfg %> };   
+    var telemex_cfg = { <% telemex_cfg %> };   
+
+    $(function(){
+    
+      <%if ctcadmin then%>
+		$("#t_upswd").hide();
+	  <%end%>	
+
+	  if ($("#tip").val() != undefined) {
+		if ($("#tip").text() != "")
+			$("#tip").text("<%T("Original password error,please input again!")%>");
+			$("input[name='upswd']").focus();
+			$("input[name='upswd']").select();
+
+	 }
+	
+	function ValidPwd(str)
+	{
+		return !/[^\x20-\x7e]/g.test(str);//check the word that we can input from the computer keyboard ALU02110797
+	}
+	  $("form").submit(function(){
+
+		var password=$("input[name='pswdNew']").val();
+		var password2=$("input[name='pswdConfirm']").val();
+		var oldpassword=$.trim($("input[name='upswd']").val());
+
+        <%if !ctcadmin then%>
+			if(oldpassword.length==0)
+			{
+			    alert("<%T("Please input original password!")%>");
+				$("input[name='upswd']").focus();
+				$("input[name='upswd']").select();
+				return false;
+			}	
+		<%end%>	
+
+		if(password.length<5||password.length>24)
+		{
+			alert("<%T("The length of new password should be 5~24!")%>");
+			$("input[name='pswdNew']").focus();
+			$("input[name='pswdNew']").select();
+			return false;
+		}
+
+		if(password!=password2)
+		{			
+		    alert("<%T("Please confirm password!")%>");
+			$("input[name='pswdConfirm']").focus();
+			$("input[name='pswdConfirm']").select();
+			return false;
+		}
+		else
+		{
+			if(!ValidPwd(password))
+			{
+				alert("please input valid password");
+				$("input[name='pswdNew']").focus();
+				$("input[name='pswdNew']").select();
+				return false;
+			}
+		}
+        var post=$(this).serialize();
+        //$("#retstr").html('<img src="/img/loading2.gif"/>..<%T("requesting")%>..');
+        $(this).find(":input").each(function(){this.disabled=true;});
+        $.ajax({
+            type:"POST",
+            url:self.location.pathname+"?set",
+            data:post,
+            dataType:"json"
+        })
+        .fail(function(xhr,status,e){
+           // $("#retstr").html(e);
+        })
+        .done(function(data){
+        	if(data.ret)
+            $("#retstr").html(data.msg);
+          else
+          	alert("<%T("Original password error,please input again!")%>");
+          	
+        })
+        .always(function(){
+            setTimeout("self.location.reload()",1000);
+        })
+		 return false;
+
+	  })
+         
+
+    })
+
+    function refresh()
+	{
+		window.location.reload();
+    }
+    
+    </script>
+    <body>
+     <div><p>&nbsp;</p></div>
+     <div id="div_xleft"></div>
+     <form autocomplete="off">
+     <%login_msg%>
+     <table >
+        <tr class="x_form_line" id="t_upswd">
+            <td class="x_form_caption"><%T("Original Password")%></td>
+            <td class="x_form_input"><input name='upswd' type='password' size="20" maxlength="26"></td>
+        </tr>
+        <tr class="x_form_line">
+             <td class="x_form_caption"><%T("New Password")%></td>
+             <td class="x_form_input"><input name='pswdNew' type='password' size="20" maxlength="26"></td>
+        </tr>
+        <tr class="x_form_line">
+             <td class="x_form_caption"><%T("Re-enter Password")%></td>
+             <td class="x_form_input"><input name='pswdConfirm' type='password' size="20" maxlength="26"></td>
+        </tr>
+        <tr class="x_form_line" id="help" >
+             <td class="x_form_caption"><%T("Prompt Message")%></td>
+             <td class="x_form_input"><input name='pwdMsg' size="20" maxlength="63"></td>
+        </tr>
+        <tr >
+        </tr> 
+        </table >
+        <br/>
+	 <table width="40%">
+           <tr class="x_form_line">
+                <td class="x_form_caption" >
+                     <center>
+                	 <input class="buttonX" type='submit' id="save" style="width: 80px;" value='<%T("Save")%>'/>
+                	 <span id="retstr"></span>
+		      </center>
+                     </td>
+	<% opid = ri("OperatorID") ;%>
+	<% if opid=="MXXT" then %>
+	<% else %>
+                      <td class="x_form_caption" >
+                	 <input class="buttonX"   style="width: 80px;"   type=button value='<%T("Refresh")%>'/>
+                     </td>
+					 <% end %>
+                </tr>
+            </table>
+        
+    </form>
+<%include ( "html_glb/footer.html" )%>
+</body>
+</html>
+

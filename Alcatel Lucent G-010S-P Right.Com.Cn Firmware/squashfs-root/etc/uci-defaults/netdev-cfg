@@ -1,0 +1,36 @@
+#!/bin/sh
+# Copyright (C) 2011 OpenWrt.org
+# Copyright (C) 2014 lantiq.com
+
+. /lib/functions/uci-defaults.sh
+. /lib/falcon.sh
+
+# uci has errors if the file does not exist:
+touch /etc/config/network
+
+ucidef_set_interface_loopback
+
+uci -q delete network.lan
+uci -q delete network.@atm-bridge[0]
+uci -q delete network.dsl
+
+default_lct=$(falcon_default_lct_get)
+
+uci batch <<EOF
+set network.lct=interface
+set network.lct.ifname=$default_lct
+set network.lct.ipaddr='192.168.1.1'
+set network.lct.netmask='255.255.255.0'
+set network.lct.proto='static'
+set network.lct.macaddr=$(falcon_mac_get $default_lct)
+set network.host=interface
+set network.host.ifname='host'
+set network.host.proto='static'
+set network.host.ipaddr='0.0.0.0'
+set network.host.netmask='0.0.0.0'
+set network.host.macaddr=$(falcon_mac_get host)
+set network.host6=interface
+set network.host6.ifname=@host
+set network.host6.proto=static
+commit network
+EOF

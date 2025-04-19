@@ -1,0 +1,102 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Ralph Hempel <ralph.hempel@infineon.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+-%>
+<%+header%>
+<script type="text/javascript" src="<%=resource%>/xhr.js"></script>
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">//<![CDATA[
+	var xhr = new XHR();
+	XHR.poll(1, '<%=build_url("admin/dsl/status")%>', null,  update_status);
+	
+	function update_status()
+	{
+		/* get json data */
+		xhr.get('<%=build_url("admin/dsl/status_update")%>', null,
+			function(x, data)
+			{
+				if (data != null)
+					for (var i = 0; i < data.length; i++)
+					{
+						lbl = document.getElementById('dsl_lsg_cur' + i);
+						lbl.innerHTML=data[i][0];
+						lbl = document.getElementById('dsl_lsg_state' + i);
+						lbl.innerHTML=data[i][1];
+						lbl = document.getElementById('dsl_us_rate' + i);
+						lbl.innerHTML=data[i][2];
+						lbl = document.getElementById('dsl_ds_rate' + i);
+						lbl.innerHTML=data[i][3];
+						lbl = document.getElementById('dsl_us_data' + i);
+						lbl.innerHTML=data[i][4];
+						lbl = document.getElementById('dsl_ds_data' + i);
+						lbl.innerHTML=data[i][5];
+					}
+				/* reset timer */
+				window.setTimeout(update_status, 1000);
+			});
+	}
+		
+	window.setTimeout(update_status, 1000);
+//]]>
+</script>
+
+<h2><%:DSL Version%></h2>
+<table border="0" width="100%">
+	<colgroup>
+		<col width="40%"></col>
+		<col width="60%"></col>
+	</colgroup>
+	<%
+		local dsl=require("luci.tools.dsl")
+		res = dsl.cli("vig")
+		local vig = dsl.split_val(res)
+		luci.http.write("<tr><td>Firmware Version</td><td>")
+		luci.http.write(dsl.assign_value(vig,'DSL_ChipSetFWVersion'))
+		luci.http.write("</td></tr>")
+		luci.http.write("<tr><td>Hardware Version</td><td>")
+		luci.http.write(dsl.assign_value(vig,'DSL_ChipSetHWVersion') .. " / ")
+		luci.http.write(dsl.assign_value(vig,'DSL_ChipSetType'))
+		luci.http.write("</td></tr>")
+		luci.http.write("<tr><td>Driver / API Version</td><td>")
+		luci.http.write(dsl.assign_value(vig,'DSL_DriverVersion') .. " / ")
+		luci.http.write(dsl.assign_value(vig,'DSL_APILibraryVersion'))
+		luci.http.write("</td></tr>")
+	%>
+</table>
+
+<h2><%:DSL Status%></h2>
+<table border="0" width="100%">
+	<colgroup>
+		<col width="5%"></col>
+		<col width="5%"></col>
+		<col width="10%"></col>
+		<col width="12%"></col>
+		<col width="12%"></col>
+		<col width="12%"></col>
+		<col width="12%"></col>
+		<col width="12%"></col>
+		<col width="12%"></col>
+	</colgroup>
+	<tr><th rowspan=2>Port</th><th rowspan=2 colspan=2>State</th><th colspan=2>Data Rate (bps)</th><th colspan=2>Traffic</th></tr>
+	<tr><th>US</th><th>DS</th><th>US</th><th>DS</th></tr>
+	<%
+	for i = 0, 7 do
+		luci.http.write ("<tr><td>" .. string.format("%d", i+1))
+		luci.http.write ("</td><td id='dsl_lsg_cur" .. string.format("%d", i) .. "'>")
+		luci.http.write ("</td><td id='dsl_lsg_state" .. string.format("%d", i) .."'>") 
+		luci.http.write ("</td><td id='dsl_us_rate" .. string.format("%d", i) .."'>") 
+		luci.http.write ("</td><td id='dsl_ds_rate" .. string.format("%d", i) .."'>") 
+		luci.http.write ("</td><td id='dsl_us_data" .. string.format("%d", i) .."'>") 
+		luci.http.write ("</td><td id='dsl_ds_data" .. string.format("%d", i) .."'>") 
+		luci.http.write ("</td></tr>") 
+	end
+	%>
+	</table>
+<%+footer%>

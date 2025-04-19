@@ -1,0 +1,5 @@
+<script language=javascript>
+    $(document).ready(function () {
+        $("form").prepend('<input type="hidden" name="csrf_token" value="<% csrf_token %>" />');		
+    });
+</script>

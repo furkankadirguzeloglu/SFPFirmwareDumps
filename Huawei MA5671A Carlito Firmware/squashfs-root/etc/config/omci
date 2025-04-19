@@ -1,0 +1,3 @@
+config 'omci' 'default'
+	option 'mib_file' '/etc/mibs/ponstick.ini'
+	option 'status_file' '/tmp/omci_status'

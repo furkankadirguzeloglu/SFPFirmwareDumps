@@ -1,0 +1,3 @@
+config 'synce' 'ethernet'
+	option 'nSyncE_Mode' ''	# 0: Dis  1: En
+	option 'bSyncE_SGMII_Squelch' '0'

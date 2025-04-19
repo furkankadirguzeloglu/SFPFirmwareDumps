@@ -1,0 +1,55 @@
+
+config goi 'global'
+	option CalibrationTimestamp '2018-08-30T04:00; script V7.6.4; OCAL V7.5.1; FW V7.5.3'
+
+config goi 'ranges'
+
+config goi 'temperature_tables'
+
+config goi 'dcdc_apd'
+
+config goi 'transmitter'
+
+config goi 'transmit_power'
+	option P1_0 '3387'
+	option P0_0 '170'
+
+config goi 'monitor'
+	option TiaGain_PL0 '3'
+	option MPD_Calibration_PL0 '2'
+	option TiaGain_PL1 '3'
+	option MPD_Calibration_PL1 '2'
+	option TiaGain_PL2 '3'
+	option MPD_Calibration_PL2 '2'
+	option Dcalref0_PL0 '1179'
+	option Dcalref1_PL0 '1259'
+	option Dcalref0_PL1 '1181'
+	option Dcalref1_PL1 '1231'
+	option Dcalref0_PL2 '1212'
+	option Dcalref1_PL2 '1238'
+	option Dref0_PL0 '445'
+	option Dref1_PL0 '2484'
+	option MPDxt_PL0 '6.71901188476'
+	option Imodref_PL0 '20.6805774976'
+	option Dref0_PL1 '286'
+	option Dref1_PL1 '1399'
+	option MPDxt_PL1 '8.2613475757'
+	option Imodref_PL1 '11.5429763498'
+	option Dref0_PL2 '189'
+	option Dref1_PL2 '667'
+	option MPDxt_PL2 '8.93174754011'
+	option Imodref_PL2 '5.72315922678'
+
+config goi 'measurement'
+	option Tscal_ref '0.508369624615'
+	option RSSI_1490dark_ref '0.00067138671875'
+	option RSSI_1490scal_ref '0.0263422026486'
+	option RSSI_1490parabolic_ref '0.154799953703'
+
+config goi 'omu'
+
+config goi 'bosa'
+
+config goi 'fcsi'
+	option GVS '0xf653'
+

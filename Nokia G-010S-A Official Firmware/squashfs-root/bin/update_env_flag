@@ -1,0 +1,54 @@
+#!/bin/sh
+
+if [ $# = 0 ];then
+	fw_setenv boot_fail 0;
+fi
+
+if [ $# = 1 ];then
+	if [ $1 = 0 ];then
+		fw_setenv commit 0;
+		fw_setenv next_active 0;
+		fw_setenv image0_is_valid 1;
+		fw_setenv image1_is_valid 1;
+		fw_setenv boot_fail 0;
+	fi
+
+	if [ $1 = 1 ];then
+		fw_setenv commit 1 ;
+		fw_setenv next_active 1 ;
+		fw_setenv image0_is_valid 1;
+		fw_setenv image1_is_valid 1;
+		fw_setenv boot_fail 0;
+	fi
+fi
+
+if [ $# = 2 ];then
+	if [ $1 = "next_active" ];then
+		if [ $2 = 0 ];then
+			fw_setenv next_active 0;
+		fi
+		if [ $2 = 1 ];then
+			fw_setenv next_active 1;
+		fi
+	fi
+
+	if [ $1 = "image0_is_valid" ];then
+		if [ $2 = 0 ];then
+			fw_setenv image0_is_valid 0;
+		fi
+		if [ $2 = 1 ];then
+			fw_setenv image0_is_valid 1;
+		fi
+	fi
+	
+	if [ $1 = "image1_is_valid" ];then
+		if [ $2 = 0 ];then
+			fw_setenv image1_is_valid 0;
+		fi
+		if [ $2 = 1 ];then
+			fw_setenv image1_is_valid 1;
+		fi
+	fi
+fi
+
+exit 0

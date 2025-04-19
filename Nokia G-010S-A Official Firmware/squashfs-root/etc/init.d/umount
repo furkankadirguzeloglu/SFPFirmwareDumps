@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+
+STOP=99
+stop() {
+	sync
+	
+	echo "" > /proc/sys/kernel/core_pattern
+
+	kill -s TERM -1
+	killall syslogd
+	#/bin/kill -s KILL -1
+	fuser -m -k /logs
+	/bin/umount /logs
+	echo "umount logs done"
+
+	fuser -m -k /configs
+	/bin/umount /configs
+	echo "umount configs done"
+
+	/bin/umount -a -d -r
+	sleep 14
+}

@@ -1,0 +1,3 @@
+config 'omci' 'default'
+	option 'mib_file' '/etc/mibs/data_2g_8q.ini'
+	option 'status_file' '/tmp/omci_status'

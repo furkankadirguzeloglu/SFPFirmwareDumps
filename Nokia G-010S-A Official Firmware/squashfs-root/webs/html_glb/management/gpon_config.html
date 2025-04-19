@@ -1,0 +1,202 @@
+<!--
+ vim:fenc=utf-8
+-->
+<html>
+<%include("html_glb/head.html")%>
+    <script>
+        var gpon_info = {
+            <% gpon_info %>
+        };
+        $(function() {
+
+            function hex2ascii(str) {
+                if (str.length % 2) return ""
+                var a = [];
+                for (var i = 0; i < str.length; i += 2) {
+                    var ch = parseInt(str.substring(i, i + 2), 16);
+                    if (ch > 31 && ch < 255) {
+                        a.push(ch)
+                    } else return "";
+                }
+                return String.fromCharCode.apply(this, a)
+            }
+            /*ALU01955411 
+        if(gpon_info.HexSLID == 1){
+          $("#pswd").html(hex2ascii(gpon_info.Password));
+        }else{
+          $("#pswd").html(gpon_info.Password);
+        }*/
+            $("#pswd").html(gpon_info.Password); //ALU01955411
+            $("select[name='pswd_mode']").val(gpon_info.HexSLID); //ALU01948787
+
+            $('form').submit(function() {
+                if ($(":input[name='pswd_mode']").val() == "1") {//HEX
+                    if (0 == <% p(pon_mode) %>)
+                    { 
+                        if (!$(":input[name='pswd_new']").val().match(/^[0-9a-fA-F]{0,20}$/)) {
+                            alert("<%t('please input in hex format')%>");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!$(":input[name='pswd_new']").val().match(/^[0-9a-fA-F]{0,72}$/)) {
+                            alert("<%t('please input in hex format')%>");
+                            return false;
+                        }
+                    }
+                    var slid_name = $("input[name='pswd_new']").val();
+                    //console.log(slid_name);
+                    if ($(":input[name='pswd_new']").val().length == 0) {
+                        alert("<%t('Please input valid slid value!')%>");
+                        return false;
+                    }
+                    //console.log(slid_name);
+                } else {//ASCII
+
+                    if ($(":input[name='pswd_new']").val().length == 0 || $(":input[name='pswd_new']").val().indexOf(" ") >= 0) {
+                        alert("<%t('Please input valid slid value!')%>");
+                        return false;
+                    }
+
+                    if (0 == <% p(pon_mode) %>)
+                    {
+                        if ($(":input[name='pswd_new']").val().length > 10) {
+                            alert("<%t('maximum 10 ASCII characters are allowed')%>");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if ($(":input[name='pswd_new']").val().length > 36) {
+                            alert("<%t('maximum 36 ASCII characters are allowed')%>");
+                            return false;
+                        }
+                    }
+
+                    var slid_name = $.trim($("input[name='pswd_new']").val());
+                    if (false == isValidName_ASCII(slid_name)) {
+                        alert("<%T("The input slid value has invalid ascii character!")%>");
+                        $("input[name='pswd_new']").focus();
+                        return false;
+                    }
+                    if ($(":input[name='pswd_new']").val() == "WILDCARD") {
+                        alert($(":input[name='pswd_new']").val() + " <%t('is the system default value, please input another one')%>");
+                        return false;
+                    }
+                }
+                $.post(location.pathname + "?set", $(this).serialize(), null, 'json')
+                    .done(function(data) {
+                        $("#msg").html(data.msg)
+                    })
+                    .error(function(xhr, st, e) {
+                        $("#msg").html("error:" + e)
+                    })
+                    .always(function() {
+                        setTimeout("self.location.reload()", 3000);
+                    })
+                $("#msg").html('<img src="/img_glb/loading2.gif"/>..<%T("requesting")%>..');
+                return false;
+            })
+        })
+
+        function refresh() {
+            window.location.reload();
+        }
+    </script>
+
+    <body margin-left="10px">
+        <br/>
+        <div>
+            <p>&nbsp;</p>
+        </div>
+        <div id="div_xleft"></div>
+        <form action="?set" method="post">
+            <table width=70%>
+                <tr class="x_form_line">
+                    <td class="x_form_caption">
+                        <%t('Current SLID')%>
+                    </td>
+                    <td class="x_form_input" id="pswd"> </td>
+                </tr>
+                <tr class="x_form_line">
+                    <td class="x_form_caption">
+                        <%t("Enter New SLID")%>
+                    </td>
+                    <td class="x_form_input">
+                        <%if pon_mode == 0 then%>
+                        <input name='pswd_new' size="20" maxlength="20">
+                        <%else%>
+                        <input name='pswd_new' size="72" maxlength="72">
+                        <%end%>
+                    </td>
+                </tr>
+                <tr class="x_form_line">
+                    <td class="x_form_caption">
+                        <%t('SLID Mode')%>
+                    </td>
+                    <td class="x_form_caption">
+                        <select name="pswd_mode" style="width:120px">
+                            <option value="0">
+                                <%t('ASCII Mode')%>
+                            </option>
+                            <option value="1">
+                                <%t('HEX Mode')%>
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="x_form_line">
+                    <td class="x_form_caption" colspan="2">
+                        <%T("Note:")%>
+                    </td>
+                </tr>
+            </table>
+            <div id="div_xleft"></div>
+            <table width="70%">
+                <tr class="x_form_line">
+                    <td style="width:1500px;font-size:14px;text-align:left;vertical-align:middle;line-height:40px">
+                        <%if pon_mode == 0 then%>
+                        <%T("ASCII Mode: Maximum of 10 ASCII characters allowed (e.g. abcdefg123)")%>
+                        <%else%>
+                        <%T("ASCII Mode: Maximum of 36 ASCII characters allowed (e.g. abcdefg123abcdefg123abcdefg123abcdef)")%>
+                        <%end%>
+                    </td>
+                </tr>
+                <tr class="x_form_line">
+                    <td style="width:1500px;font-size:14px;text-align:left;vertical-align:middle;line-height:40px">
+                        <%if pon_mode == 0 then%>
+                        <%T("HEX Mode: Maximum of 20 HEX numbers allowed (e.g. 1234567890ABCDEF1234)")%>
+                        <%else%>
+                        <%T("HEX Mode: Maximum of 72 HEX numbers allowed (e.g. 1234567890ABCDEF1234...)")%>
+                        <%end%>
+                    </td>
+                </tr>
+            </table>
+            <table width="40%">
+                <tr class="x_form_line">
+                    <td class="x_form_input" style="width:600px"></td>
+                    <td class="x_form_input">
+                        <input type="submit" class="submitX" style="width:80px" value="<%T(" Save ")%>"/>
+                    </td>
+                    <td class="x_form_input" style="width:120px"></td>
+                    <% opid = ri("OperatorID") ;%>
+                    <% if opid=="MXXT" then %>
+                    <% else %>
+                    <td class="x_form_input">
+                        <input type="button" class="buttonX" style="width: 80px;" value="<%T(" Refresh ")%>" onclick="refresh();" />
+                    </td>
+                    <% end %>
+                </tr>
+                <tr class="x_form_line">
+                    <td class="x_form_input" style="width:10px"></td>
+                    <td class="x_form_input" colspan="3">
+                        <span id="msg" style="font-size:14px"> </span>
+                    </td>
+                </tr>
+                <table>
+        </form>
+<%include ( "html_glb/footer.html" )%>
+    </body>
+
+</html>

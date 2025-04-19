@@ -1,0 +1,15 @@
+#!/bin/sh
+
+init_nfs() {
+	grep -q "nfsroot" /proc/cmdline && {
+		echo "- nfs-root detected -"
+		[ $$ -eq 1 ] && {
+			# if running as pid=1 this is 12.09
+			pi_mount_skip_next=true
+		} || {
+			export INITRAMFS=1 # for 14.07
+		}
+	}
+}
+
+boot_hook_add preinit_main init_nfs

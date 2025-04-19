@@ -1,0 +1,25 @@
+# Zaram PONSTICK custom function/feature configurations
+# \author	inode(jyeom@zaram.com)
+# \brief	this option is default value for none target
+#			each configuration value will be overriden by sys.sh if the u-boot enviroment variable 'target' is set
+
+config sys target
+	option name 'none'
+
+# describtion of the uci option "sys.features.eeprom_sync_option"
+# it's EEPROM/UCI synchronizing option 
+# 0: do not synchronize
+# 1|restricted: do synchronize vendor specific value
+# 2|unrestricted: do synchronize entire EEPROM(for debug only)
+config sys features
+	option mib_customized '0'
+	option igmp_fast_leave '0'
+	option dying_gasp_enabled '0'
+	option suppress_power_level '0'
+	option eeprom_sync_option '0'
+
+# only available for the target mib_customized
+config sys mib
+	option vender_id ''
+	option ont_version ''
+	option equipment_id ''

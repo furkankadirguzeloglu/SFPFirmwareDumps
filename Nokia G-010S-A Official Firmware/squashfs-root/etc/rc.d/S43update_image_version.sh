@@ -1,0 +1,1 @@
+../init.d/update_image_version.sh

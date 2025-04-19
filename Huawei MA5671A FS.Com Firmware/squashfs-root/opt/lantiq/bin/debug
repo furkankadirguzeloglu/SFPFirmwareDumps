@@ -1,0 +1,50 @@
+#!/bin/ash
+
+
+name='/tmp/log/one_click'
+
+echo '#####get omci log####' > $name
+/bin/cat /tmp/log/debug >> $name
+
+echo '#####get firmware version####' >> $name
+/opt/lantiq/bin/omcid -v >> $name
+
+echo '#####get meminfo ###' >> $name
+/bin/cat /proc/meminfo >> $name
+
+echo '#####get ps ###' >> $name
+/bin/ps >> $name
+
+echo '#####last time reboot cause####' >> $name
+/opt/lantiq/bin/onu onurg 32 0x1f20000c >> $name
+echo '1"Power-On Reset",2"RST Pin",3"Watchdog",4"Software",5"PLOAM message",6"Unknown!",' >> $name
+
+echo '#####boot time print start####' >> $name
+/bin/cat /proc/uptime >> $name
+
+echo '#####date time print start####' >> $name
+/bin/date >> $name
+
+echo '#####ifconfig print start####' >> $name
+/sbin/ifconfig >> $name
+
+echo '#####env print start####' >> $name
+/usr/sbin/fw_printenv >> $name
+
+echo '#####dmesg print start####' >> $name
+/bin/dmesg >> $name
+
+echo '#####gtop print start####' >> $name
+/opt/lantiq/bin/gtop -b;cat /tmp/gtop.txt >> $name
+
+echo '#####otop print start####' >> $name
+/opt/lantiq/bin/otop -b;cat /tmp/gtop.txt >> $name
+
+echo '#####sn print start####' >> $name
+/opt/lantiq/bin/onu gtcsng >> $name
+
+echo '#####omci me print start####' >> $name
+/opt/lantiq/bin/omci_pipe.sh md >> $name
+
+echo '#####omci me detail print start####' >> $name
+/opt/lantiq/bin/omci_pipe.sh mda >> $name

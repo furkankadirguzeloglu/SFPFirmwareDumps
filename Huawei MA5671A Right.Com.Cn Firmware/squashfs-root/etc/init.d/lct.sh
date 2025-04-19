@@ -1,0 +1,79 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2009 OpenWrt.org
+# Copyright (C) 2011 lantiq.com
+
+. $IPKG_INSTROOT/lib/falcon.sh
+
+START=65
+
+log() {
+	logger -s -p daemon.err -t "[onu]" "$*" 2> /dev/console
+}
+
+onu() {
+	#echo "onu $*"
+	result=`/opt/lantiq/bin/onu $*`
+	#echo "result $result"
+	status=${result%% *}
+	if [ "$status" != "errorcode=0" ]; then
+		log "onu $* failed: $result"
+	fi
+}
+
+lct_mac_cfg_set() {
+	local lctname=$(uci -q get network.lct.ifname)
+	local port="${lctname##lct}"
+	local mac=$(uci -q get network.lct.macaddr | sed -e 's/^/0x/' -e 's/:/ 0x/g')
+
+	[ -n "$port" -a -n "$mac" ] && {
+		onu lan_port_mac_cfg_set $port $mac
+	}
+}
+
+gpon_lct_setup() {
+	# only use ip addr from u-boot if no dm9000 is connected (as on easy98000)
+	if [ -e /proc/cpld/ebu ]; then
+		case `cat /proc/cpld/ebu` in
+		"Ethernet Controller module"*) # dm9000 module
+			echo "Found dm9000, don't change config of lct"
+			ifup lct
+			return 0
+			;;
+		*)
+			echo "No dm9000"
+			;;
+		esac
+	fi
+
+	echo "Setup lct"
+	lct_mac_cfg_set
+
+	local ip=$(awk 'BEGIN{RS=" ";FS="="} $1 == "ip" {print $2}' /proc/cmdline)
+	local ipaddrenv=$(echo $ip | awk 'BEGIN{FS=":"} {print $1}')
+	local gatewayenv=$(echo $ip | awk 'BEGIN{FS=":"} {print $3}')
+	local netmaskenv=$(echo $ip | awk 'BEGIN{FS=":"} {print $4}')
+	local ipaddr=`echo $ipaddrenv | grep -o -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" | awk -F. '$1<255&&$2<255&&$3<255&&$4<255'`
+	local gateway=`echo $gatewayenv | grep -o -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" | awk -F. '$1<255&&$2<255&&$3<255&&$4<255'`
+	local netmask=`echo $netmaskenv | grep -o -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" | awk -F. '$1<256&&$2<256&&$3<256&&$4<256'`
+	local lct_proto=`uci -q get network.lct.proto`
+	[ -n "$ipaddr" ] && uci set network.lct.ipaddr=$ipaddr
+	[ -z "$ipaddr" ] && logger -t "[lct.sh]" "Invaild ip address detected, using default ip address ..." && uci set network.lct.ipaddr="192.168.1.10"
+	[ -n "$gateway" ] && uci set network.lct.gateway=$gateway
+	[ -n "$netmask" ] && uci set network.lct.netmask=$netmask
+	[ -n "$ipaddr" -o -n "$gateway" -o -n "$netmask" ] && uci commit network
+	[ "$lct_proto" != "static" ] && logger -t "[lct.sh]" "Setting Lct Proto back to static ..." uci set network.lct.proto=static && uci commit network
+	ifup lct
+}
+
+start() {
+	/opt/lantiq/bin/sfp_i2c -c 2>&-
+	gpon_lct_setup
+
+	[ -f "/etc/config/.fttdp" ] && {
+		# on FttDP8, loop detection needs a valid MAC addr for DSL ports
+		# we reuse the LCT specific one
+		local mac=$(uci -q get network.lct.macaddr | sed -e 's/^/0x/' -e 's/:/ 0x/g')
+		onu lan_port_mac_cfg_set 0 $mac
+	}
+
+}

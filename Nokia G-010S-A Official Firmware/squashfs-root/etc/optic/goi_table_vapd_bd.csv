@@ -1,0 +1,4 @@
+# do not change Type;
+Type=VAPD_BD;
+# Temp; Vref [V]
+309;43.131

@@ -1,0 +1,263 @@
+<html>
+<%include ( "html/head.html" ) %>
+
+    <head>
+        <title>
+            <%T("GPON Home Gateway")%>
+        </title>
+        <meta http-equiv="Content-Type" content="text/html ;charset=utf-8" />
+        <link href="./css_glb/ont.css" type="text/css" rel="stylesheet" />
+        <link href="./css_glb/menu.css" type="text/css" rel="stylesheet" />
+        <script src="js_glb/jquery-1.6.1.min.js" charset="UTF-8"></script>
+        <!--<script src="js/menu.js" charset="GB2312"></script>-->
+        <script src="menu.cgi"></script>
+        <script language="javascript" type="text/javascript">
+            <% opid = ri("OperatorID") ;%>
+
+
+            window.onload = function() {
+                var win = document.getElementById("mainFrame");
+                var cWidth = window.innerWidth || document.body.clientWidth;
+                if (document.getElementById) {
+                    if (win && !window.opera) {
+                        if (win.contentDocument && win.contentDocument.body.offsetWidth)
+                            win.width = window.innerWidth - 208;
+                        else if (win.Document && win.Document.body.scrollWidth)
+                            win.width = cWidth - 208;
+                    }
+                }
+            }
+
+            window.onresize = function() {
+                var win = document.getElementById("mainFrame");
+                var cWidth = window.innerWidth || document.body.clientWidth;
+                if (document.getElementById) {
+                    if (win && !window.opera) {
+                        if (win.contentDocument && win.contentDocument.body.offsetWidth)
+                            win.width = window.innerWidth - 208;
+                        else if (win.Document && win.Document.body.scrollWidth)
+                            win.width = cWidth - 208;
+                    }
+                }
+            }
+
+            function CheckExpire() {
+                $.ajax({
+                        type: 'POST',
+                        url: '/check_expire.cgi',
+                        data: '',
+                        dataType: "json"
+                    })
+                    .done(function(exp) {
+                        if (exp.expired != "no") {
+                            window.location.reload();
+                        }
+                    })
+            }
+
+            $(function() {
+
+
+
+                LoadTopMenu();
+
+                $("#div_menu_left ul li").eq(0).click();
+
+                setInterval("CheckExpire();", 10000);
+            })
+
+            function LoadTopMenu() {
+
+                for (index in all_nodes.nodes) {
+
+                    if (all_nodes.nodes[index].nodes.length > 0) {
+                        var img = "open.gif";
+                        var t_menu = $("<ul class='x_main_menu'><li class='x_main_menu' ><a href='#'><img  src='/img_glb/" + img + "'>" + all_nodes.nodes[index].name + "</a></li></ul>")
+
+                        $("#div_menu_left ").append(t_menu);
+
+                        t_menu.click(new function() {
+
+                            $("#div_content_left ul").eq(index).click(function() {
+
+                                $(this).each(function(index, v) {
+
+                                    $(v).find("li").eq(0).attr("class", 'x_cur_main_menu');
+                                    $(v).find("li").slice(1).remove();
+
+                                })
+
+                                $(this).siblings().each(function(index, v) {
+
+                                    var top = $(v).find("li").eq(0);
+
+                                    $(v).find("li").eq(0).attr("class", 'x_main_menu');
+
+                                    $(v).find("li").slice(1).hide();
+
+                                    $("img", top).attr("src", '/img_glb/open.gif');
+
+                                })
+                            })
+
+                            var t_submenu = t_menu;
+                            var node = all_nodes.nodes[index];
+
+                            return function() {
+
+                                return SelectSubMenu(node, t_submenu);
+
+                            }
+                        });
+                    }
+                }
+            }
+
+
+            function SelectSubMenu(node, t_sub) {
+
+
+                var nodes = node.nodes;
+                var mt = node.name;
+                var c_img = '/img_glb/close.gif';
+
+                $("img", t_sub).attr("src", c_img);
+
+                for (index in nodes) {
+
+                    var l_submenu = $("<li class='x_sub_menu' ><a href='#'  target='mainFrame'>" + nodes[index].name + "</a></li>")
+
+                    t_sub.append(l_submenu);
+
+                    l_submenu.click(new function() {
+
+                        var node = nodes[index];
+                        var sub = l_submenu;
+
+                        return function() {
+
+                            if (typeof(node.target) == "string") {
+
+                                var st = node.name;
+                                var title_top = mt + "&gt;" + st;
+
+                                $("#xtitle_top").html(title_top);
+
+                                sub.attr("class", 'x_cur_sub_menu');
+
+                                sub.siblings().slice(1).attr("class", 'x_sub_menu');
+
+                                GoToUrl(node.target);
+                            }
+
+                            return false;
+
+                        }
+
+                    })
+
+
+                    $("a", l_submenu).attr("href", nodes[index].target);
+
+                }
+
+
+                if (typeof(node.target) == "number" && node.target < nodes.length) {
+
+                    $("li", t_sub).eq((node.target) + 1).click();
+
+                } else if (typeof(node.target) == "string") {
+
+                    GoToUrl(node.target);
+
+                }
+                return false;
+
+            }
+
+            function GoToUrl(url) {
+                <!-- Clear the session storage when the pages are navigated -->
+                if (url == "us_classifier.cgi") {
+                    sessionStorage.removeItem("policy_state");
+                    sessionStorage.removeItem("classifier_state");
+                    sessionStorage.removeItem("rules_state");
+                }
+
+                $(window).scrollTop(0);
+                $("iframe[name='mainFrame']").attr("src", url)
+            }
+
+            function OnLogout() {
+                top.location.href = "/reg.html";
+            }
+
+            function refresh() {
+                window.location.reload();
+            }
+        </script>
+    </head>
+
+    <Body style="overflow: hidden">
+        <div id="div_logo">
+            <div id="div_logo1">
+                <ul>
+                    <li id="xlogo"></li>
+                </ul>
+            </div>
+            <div id="div_logo2"></div>
+            <div id="div_logo3">
+                <div id="div_pad"></div>
+                <div id="div_top">
+                    <div id="div_title">
+                        <ul>
+                            <li id="xtitle">
+                                <%T("GPON Home Gateway")%>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="div_logout">
+                        <ul>
+                            <li id="xlogout">
+                                <a href="login.cgi?out">
+                                    <%T("Logout")%>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="div_yy">
+                    </div>
+                </div>
+            </div>
+            <div id="div_logo4"></div>
+        </div>
+        <table width="1150">
+            <tr>
+                <td id="div_left"></td>
+                <td id="div_margin"></td>
+                <td>
+                    <table align=left>
+                        <tr id="div_path">
+                            <td id="xtitle_top"></td>
+                        </tr>
+                        <tr>
+                            <td id="div_img"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table height="800px" width="1150">
+            <tr>
+                <td valign=top leftmargin="0" width="16%" height="100%">
+                    <div id="div_content_left">
+                        <div id="div_menu_left"></div>
+                    </div>
+                </td>
+                <td valign=top align=left>
+                    <IFRAME name="mainFrame" id="mainFrame" width="1150" frameborder="0" framespacing="0" height="450px"></IFRAME>
+                </td>
+            </tr>
+        </table>
+    </Body>
+
+</html>

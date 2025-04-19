@@ -1,0 +1,1 @@
+../init.d/ssb_check.sh

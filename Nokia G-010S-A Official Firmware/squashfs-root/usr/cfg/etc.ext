@@ -1,0 +1,4 @@
+#### /etc/etcfile configuration file for non-storage, per line per item
+## configuration line formart: <link_path @ /etc/> : <link_source @ /usr/>
+# ------------------------------------------------------------------------------
+#/etc/services:/usr/etc/services

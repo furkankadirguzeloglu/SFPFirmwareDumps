@@ -1,0 +1,79 @@
+#!/bin/sh
+
+# Copyright (C) 2010 OpenWrt.org
+# Copyright (C) 2010 lantiq.com
+
+if [ "$DEVICENAME" != "onu0" ]; then
+	return
+fi
+
+. /lib/functions/leds.sh
+
+led0=""
+led1=""
+
+find_led() {
+	led_file=$(find /sys/class/leds/ -name "*$1*" |head -n1)
+	if [ ! -f $led_file ]; then
+		status_led=$(basename $led_file)
+	fi;
+	echo "$status_led"
+}
+
+get_pon_led() {
+	led0=$(find_led "green:gpon")
+	led1=$(find_led "red:gpon")
+
+	if [ -z "$led0$led1" ]; then
+		led0=$(find_led "gpon")
+	fi
+	if [ -n "$led0" ]; then
+		return
+	fi
+
+	# old board specific assignments as fall-back
+	led0=$(find_led "easy980*:green:0")
+	if [ -n "$led0" ]; then
+		led1=$(find_led "easy98000:green:1")
+		if [ -n "$led1" ]; then
+			return
+		fi
+	fi
+}
+
+led_set_off() {
+	led_off $led0
+	led_off $led1
+}
+
+led_set_green() {
+	led_on $led0
+}
+
+led_set_red() {
+	led_on $led1
+}
+
+led_set_green_blink() {
+	led_timer $led0 100 200
+}
+
+led_config() {
+	if [ "$STATE" = "5" ]; then
+		led_set_off
+		led_set_green
+	elif [ "$STATE" = "0" -o "$STATE" = "1" ]; then
+		led_set_off
+		led_set_red
+	else
+		led_set_off
+		led_set_green_blink
+	fi
+}
+
+get_pon_led
+
+# serialize the state handling by a lock
+lock /tmp/.gpon_led_config
+led_config
+lock -u /tmp/.gpon_led_config

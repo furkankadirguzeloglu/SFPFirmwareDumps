@@ -1,0 +1,17 @@
+#!/bin/sh
+
+sfp=/opt/lantiq/bin/sfp_i2c
+
+usage() {
+		echo
+        echo "Usage: set_serial_number  <SN>"
+        echo "       The vendor serial number (vendor SN) is a 16 character field that contains ASCII characters."
+        echo
+        exit
+}
+
+if [ $# != 1 ]; then
+      usage
+fi
+
+${sfp}  -s  $*  -i  8

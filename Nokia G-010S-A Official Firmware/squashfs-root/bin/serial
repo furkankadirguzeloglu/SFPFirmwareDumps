@@ -1,0 +1,17 @@
+#!/bin/sh
+if [ $# != 1 ];then
+	echo "please input: serial open/close"
+	exit 1
+fi
+
+if [ $1 = "open" ];then
+	echo "enable serial and disable present pin"
+	fw_setenv preboot 'run start_netconsole'
+	fw_setenv asc0 0
+fi
+
+if [ $1 = "close" ];then
+	echo "disabled serial and enable present pin"
+	fw_setenv preboot 'gpio clear 100'
+	fw_setenv asc0 3
+fi

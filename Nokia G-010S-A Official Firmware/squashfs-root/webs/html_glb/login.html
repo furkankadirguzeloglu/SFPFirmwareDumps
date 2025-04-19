@@ -1,0 +1,273 @@
+<!-- vim:fenc=utf-8
+-->
+<html>
+
+<head>
+    <title>
+        <%T("GPON Home Gateway")%>
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script>
+        if (self != top) top.location = self.location
+    </script>
+    <link rel="stylesheet" href='/css_glb/main.css' type='text/css' />
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            background: #ffffff;
+            font-size: 12px;
+            color: #E36813;
+            line-height: 170%;
+            text-align: center;
+            vertical-align: middle;
+            padding-top: 150px;
+        }
+        
+        .ct_text {
+            width: 115px;
+            border: 1px #87a6c3 solid;
+            background: #ffffff;
+        }
+    </style>
+    <script src="js_glb/jquery-1.6.1.min.js" charset="UTF-8"></script>
+    <script>
+        //http to https when login for viettel
+        <% opid = ri("OperatorID") ;%>
+
+
+        var err_t = [<%err_times%>];
+        var ns4 = (document.layers) ? true : false;
+        var ie4 = (document.all) ? true : false;
+
+        var hexVals = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "A", "B", "C", "D", "E", "F");
+        var unsafeString = "\"<>%\\^[]`\+\$\,'#&";
+        // deleted these chars from the include list ";", "default.htm", "?", ":", "@", "=", "&" and #
+        // so that we could analyze actual URLs
+
+
+        $(function() {
+
+        })
+
+        function isUnsafe(compareChar)
+        // this function checks to see if a char is URL unsafe.
+        // Returns bool result. True = unsafe, False = safe
+        {
+            if (unsafeString.indexOf(compareChar) == -1 && compareChar.charCodeAt(0) > 32 && compareChar.charCodeAt(0) < 123)
+                return false; // found no unsafe chars, return false
+            else
+                return true;
+        }
+
+        function decToHex(num, radix)
+        // part of the hex-ifying functionality
+        {
+            var hexString = "";
+            while (num >= radix) {
+                temp = num % radix;
+                num = Math.floor(num / radix);
+                hexString += hexVals[temp];
+            }
+            hexString += hexVals[num];
+            return reversal(hexString);
+        }
+
+        function reversal(s)
+        // part of the hex-ifying functionality
+        {
+            var len = s.length;
+            var trans = "";
+            for (i = 0; i < len; i++)
+                trans = trans + s.substring(len - i - 1, len - i);
+            s = trans;
+            return s;
+        }
+
+        function convert(val)
+        // this converts a given char to url hex form
+        {
+            return "%" + decToHex(val.charCodeAt(0), 16);
+        }
+
+        function encodeUrl(val) {
+            var len = val.length;
+            var i = 0;
+            var newStr = "";
+            var original = val;
+
+            for (i = 0; i < len; i++) {
+                if (val.substring(i, i + 1).charCodeAt(0) < 255) {
+                    // hack to eliminate the rest of unicode from this
+                    if (isUnsafe(val.substring(i, i + 1)) == false)
+                        newStr = newStr + val.substring(i, i + 1);
+                    else
+                        newStr = newStr + convert(val.substring(i, i + 1));
+                } else {
+                    // woopsie! restore.
+                    alert("Found a non-ISO-8859-1 character at position: " + (i + 1) + ",\nPlease eliminate before continuing.");
+                    newStr = original;
+                    // short-circuit the loop and exit
+                    i = len;
+                }
+            }
+
+            return newStr;
+        }
+
+        function onlogin() {
+            with(document.forms[0]) {
+                if (username.value.length <= 0) {
+                    alert("<%T("user name is null")%>");
+                    return;
+                }
+
+                var loc = "login.cgi@username=" + encodeUrl(username.value) + "&psd=" + encodeUrl(password.value);
+                var code = 'location="' + loc + '"';
+                eval(code);
+            }
+        }
+
+        function onlogindiag() {
+            with(document.forms[0]) {
+                if (username.value.length <= 0) {
+                    alert("<%T("user name is null")%>");
+                    return;
+                }
+
+                var loc = "login.cgi@diag=1" + "&username=" + encodeUrl(username.value) + "&psd=" + encodeUrl(password.value);
+                var code = 'location="' + loc + '"';
+                eval(code);
+            }
+        }
+
+        function myKeyDown(e) {
+            if (ns4 && e.which == 13) {
+                //onlogin();
+                return e.which;
+            } else if (ie4 && window.event.keyCode == 13) {
+                //onlogin();
+                return window.event.keyCode;
+            }
+            return 0;
+        }
+
+        document.onkeydown = myKeyDown;
+        if (ns4) {
+            document.captureEvents(Event.KEYDOWN);
+        }
+
+        var popUpWin = 0;
+
+        function popUpRegWin() {
+            if (popUpWin) {
+                if (!popUpWin.closed) popUpWin.close();
+            }
+            popUpWin = open("reg.cgi", 'popUpWin',
+                'toolbar=yes,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,copyhistory=yes,width=800,height=600,left=200, top=200');
+        }
+
+        function frmLoad() {
+            with(document.forms[0]) {
+
+                username.focus();
+
+                if ($("#tip").val() != undefined) {
+
+                    tip_stat = "";
+                    tt = "<font color='black'><%T("Password Tip:")%></font>";
+
+                    if ($("#tip").text() == "") {
+                        tip_stat = tt + "<font color='red'><%T("Please input default password!")%></font>";
+                        $("#tip").text("");
+                        $("#tip").html(tip_stat);
+
+                    } else {
+                        stt = "<font color='red'>" + $("#tip").text() + "</font>";
+                        tip_stat = tt + stt;
+                        $("#tip").html(tip_stat);
+                    }
+
+                }
+
+                if (err_t.length > 0) {
+                    err1 = parseInt(err_t[0]);
+                    if ((err1 > 0) && (err1 < 4)) {
+                        err_str = "<font color='red'><%T("You have failed")%></font>";
+                        err_str += " " + err1 + " ";
+                        err_str += "<font color='red'><%T("times")%></font>";
+                        $("#err_times").html(err_str);
+                    } else {
+                        $("#err_times").html("");
+                    }
+                }
+
+
+            }
+        }
+
+        //function changeSubmit()
+        //{
+        //  document.getElementById["loginform"].action = "login.cgi?selftest";
+        //  $["#loginform"].submit();
+        //}
+    </script>
+</head>
+
+<body leftmargin="0" topmargin="0" onload="frmLoad()">
+    <%  opid = ri("OperatorID"); %>
+    <form method="post" action="login.cgi" id="loginform">
+        <%login_msg%>
+            <table width="300" height="20%" cellpadding="0" cellspacing="0" bgcolor="#ffffff" align="center">
+                <tr height="32" bgcolor="#4393A3" align="center">
+                    <td colspan=2 style="FONT-WEIGHT: bold;color:#000000;">
+                        <%T("GPON Home Gateway")%>
+                            <%T("Login")%>
+                    </td>
+                </tr>
+                <tr height="100">
+                    <td width="100%" style="border:2px solid #4393a3 ">
+                        <table>
+                            <tr height="50%" align="top">
+                                <td align="center" width="55%" style="color:#000000">
+                                    <%T("Username")%>
+                                </td>
+                                <td align="center" width="120" height="15">
+                                    <input type="text" name="name" id="username" class="ct_text" style="background-color:0xffffff" value="" maxlength="55" />
+                                </td>
+                            </tr>
+                            <tr height="10" background-color:#ffffff></tr>
+                            <tr>
+                                <td align="center" width="55%" style="color:#000000">
+                                    <%T("Password")%>
+                                </td>
+                                <td align="center" width="120" height="15">
+                                    <input type="password" name="pswd" id="password" class="ct_text" style="background-color:0xffffff" maxlength="88" />
+                                </td>
+                            </tr>
+                            <tr height="5" align=center>
+                                <td colspan=2 id="err_times"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr height="12" bgcolor="#4393A3" align="center">
+                    <td colspan=2>
+                        <table width="100%">
+                            <tr>
+                                <td width="40%" align="right">
+                                    <input type="submit" height="10" value="<%T(" Login ")%>"/>
+                                </td>
+                                <td align="center">
+                                    <input type="reset" height="10" value="<%T(" Reset ")%>"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+#!/bin/sh
+
+#log() {
+#        logger -s -p daemon.err -t "[onu]" "$*" 2> /dev/console
+#}
+
+#onu () {
+#        #echo "onu $*"
+#        result=`/opt/lantiq/bin/onu $*`
+#        echo "result $result"
+#        status=${result%% *}
+#        if [ "$status" != "errorcode=0" ]; then
+#                log "onu $* failed: $result"
+#        fi
+#}
+
+onu=/opt/lantiq/bin/onu
+
+usage() {
+        echo
+        echo "Usage: set_queue_buffer_cell_num  <us queue buffer cell num> <ds queue buffer cell num>"
+        echo
+        exit
+}
+
+if [ $# != 2 ]; then
+      usage
+fi
+
+#set buffer size in cells of upstream queues
+for queue_index in `seq 0 63`; do
+    result=`$onu gpeeqcg $queue_index`
+    
+    formatted=$(echo "$result" | awk 'BEGIN{RS=" ";FS="=";ORS=" "} {print $2}')
+    #echo $formatted
+    #echo "queue index=$queue_index"
+
+    errorcode=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $1}')
+    #index=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $2}')
+    enable=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $3}')
+    sbin_enable=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $4}')
+    weight=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $5}')
+    wred_enable=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $6}')
+    avg_weight=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $7}')
+    drop_threshold_unassigned=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $8}')
+    reservation_threshold=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $9}')
+    drop_threshold_red=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $10}')
+    #drop_threshold_green_max=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $11}')
+    #drop_threshold_green_min=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $12}')
+    #drop_threshold_yellow_max=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $13}')
+    #drop_threshold_yellow_min=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $14}')
+    drop_probability_green=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $15}')
+    drop_probability_yellow=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $16}')
+    coloring_mode=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $17}')
+
+    if [ "$errorcode"=="0" ];then
+        $onu gpeeqcs $queue_index $enable $sbin_enable $weight $wred_enable $avg_weight $drop_threshold_unassigned $reservation_threshold $drop_threshold_red $1 $1 $1 $1 $drop_probability_green $drop_probability_yellow $coloring_mode
+    else
+        echo "onu gpe_egress_queue_cfg_get $queue_index return failed!!!   $result"
+    fi
+done
+
+#set buffer size in cells of downstream queues
+for queue_index in `seq 128 135`; do
+    result=`$onu gpeeqcg $queue_index`
+
+    formatted=$(echo "$result" | awk 'BEGIN{RS=" ";FS="=";ORS=" "} {print $2}')
+    #echo $formatted
+    #echo "queue index=$queue_index"
+
+    errorcode=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $1}')
+    #index=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $2}')
+    enable=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $3}')
+    sbin_enable=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $4}')
+    weight=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $5}')
+    wred_enable=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $6}')
+    avg_weight=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $7}')
+    drop_threshold_unassigned=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $8}')
+    reservation_threshold=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $9}')
+    drop_threshold_red=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $10}')
+    #drop_threshold_green_max=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $11}')
+    #drop_threshold_green_min=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $12}')
+    #drop_threshold_yellow_max=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $13}')
+    #drop_threshold_yellow_min=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $14}')
+    drop_probability_green=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $15}')
+    drop_probability_yellow=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $16}')
+    coloring_mode=$(echo "$formatted" | awk 'BEGIN{FS=" "} {print $17}')
+
+    if [ "$errorcode"=="0" ];then
+        $onu gpeeqcs $queue_index $enable $sbin_enable $weight $wred_enable $avg_weight $drop_threshold_unassigned $reservation_threshold $drop_threshold_red $2 $2 $2 $2 $drop_probability_green $drop_probability_yellow $coloring_mode
+    else
+        echo "onu gpe_egress_queue_cfg_get $queue_index return failed!!!   $result"
+    fi
+done
+

@@ -1,0 +1,30 @@
+
+config interface 'loopback'
+	option ifname 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option ula_prefix 'auto'
+
+config interface 'lct'
+	option ifname 'lct0'
+	option netmask '255.255.255.0'
+	option proto 'static'
+	option macaddr '48:57:02:ab:12:2f'
+	option ipaddr '192.168.1.254'
+	option gateway '192.168.1.1'
+	option dns '192.168.1.1'
+
+config interface 'host'
+	option ifname 'host'
+	option proto 'static'
+	option ipaddr '0.0.0.0'
+	option netmask '0.0.0.0'
+	option macaddr 'ac:9a:96:00:02:00'
+
+config interface 'host6'
+	option ifname '@host'
+	option proto 'static'
+

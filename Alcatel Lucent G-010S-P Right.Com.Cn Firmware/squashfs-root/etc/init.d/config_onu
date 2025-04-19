@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+
+START=60
+STOP=15
+
+start() {
+	/opt/lantiq/bin/config_onu.sh init
+	/opt/lantiq/bin/config_onu.sh rebootcause
+	/opt/lantiq/bin/config_onu.sh rebootnum
+	/opt/lantiq/bin/config_onu.sh disable
+	/opt/lantiq/bin/config_onu.sh initasc
+}
+
+stop() {
+	/opt/lantiq/bin/config_onu.sh init
+	local update_goi=`uci -q get gpon.goi.overwrite`
+	if [ "$update_goi" == "1" ]; then
+		/opt/lantiq/bin/config_onu.sh update
+	fi
+}

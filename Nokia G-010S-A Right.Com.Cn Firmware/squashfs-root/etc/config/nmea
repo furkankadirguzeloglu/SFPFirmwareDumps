@@ -1,0 +1,3 @@
+config 'nmea' 'message'
+	option 'nmea_format'	'1'	# 0:NMEA_GPZDA 1:NMEA_GPZDG
+	option 'time_offset'	'19'	# ignored when using NMEA_GPZDG

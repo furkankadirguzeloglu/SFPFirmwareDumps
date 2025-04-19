@@ -1,0 +1,1 @@
+../../usr/exe/clean_boot_fail_counter.sh

@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Copyright (C) 2013 OpenWrt.org
+#
+
+[ -e /etc/config/firewall ] || exit 0
+
+uci set firewall.@zone[0].network='lct'
+uci set firewall.@zone[1].network='host host6'
+uci commit firewall
+
+exit 0

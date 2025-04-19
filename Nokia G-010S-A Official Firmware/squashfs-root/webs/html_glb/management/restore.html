@@ -1,0 +1,50 @@
+<!--
+ vim:fenc=utf-8
+-->
+<html>
+    <% include("html_glb/head.html") %>
+
+    <script>
+        $(function(){
+            $("input").click(function(){
+            var confirm = window.confirm("<%t('Do you want to reset system configuration to factory default setting?')%>");
+					if(confirm == true)
+  					{
+						$.ajax({
+                    	type:'POST',
+                    	url:self.location.pathname +"?restore_glb",
+                    	data:'data'
+                		})
+                		.done(function(data){
+                    	//$("#status").html(data);
+                    	$("#status").html("<%t('reset to default OK.done reboot.')%>");
+                    	
+                		})
+                		.always(function(){
+                    	$("input").prop("disabled",false);
+                		})
+                		$("#status").html("<img src='/img_glb/loading.gif'/>");
+                		$(this).prop("disabled",true);
+					}
+					else
+					{
+						return false;
+					}      
+            })
+        })
+    </script>
+    <body >
+        <div class="container">
+             <div class="row" >
+            <div class="col-xs-offset-5">
+               <input class="buttonX" type='button'  style="width:200px" value='<%T("Factory Default")%>'/>
+                <span id="status" ></span>
+            </div>  
+        </div> 
+    <%include ( "html_glb/footer.html" )%>
+    </div>	
+    </body>
+        
+</html>
+
+

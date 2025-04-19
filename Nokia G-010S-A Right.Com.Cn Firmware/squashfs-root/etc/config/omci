@@ -1,0 +1,5 @@
+
+config omci 'default'
+	option status_file '/tmp/omci_status'
+	option mib_file '/etc/mibs/data_1g_8q_us1280_ds512.ini'
+

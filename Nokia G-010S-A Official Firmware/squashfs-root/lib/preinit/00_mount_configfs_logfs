@@ -1,0 +1,32 @@
+#!/bin/sh
+configfs_mtd=$(cat /proc/mtd  | grep configfs | awk '{print $1}' |sed 's/mtd/mtdblock/'|sed 's/://')
+logfs_mtd=$(cat /proc/mtd  | grep logfs | awk '{print $1}' |sed 's/mtd/mtdblock/'|sed 's/://')
+mount -t jffs2  /dev/$configfs_mtd /configs 
+#if mount configs failed we need to format configs parition and mount again
+if [ $? != 0 ];then
+	cn=`echo $configfs_mtd | cut -c 9 `
+	mtd erase /dev/mtd$cn
+	echo "format configs parition and mount again" >> /tmp/mount.log
+	mtd jffs2write /tmp/mount.log /dev/mtd$cn
+	mount -t jffs2  /dev/$configfs_mtd /configs
+fi
+
+#if mount logs failed we need to format logs parition and mount again
+mount -t jffs2  /dev/$logfs_mtd /logs
+if [ $? != 0 ];then
+	ln=`echo $logfs_mtd | cut -c 9 `
+	mtd erase /dev/mtd$ln
+	echo "format logs parition and mount again" >> /tmp/mount.log
+	mtd jffs2write /tmp/mount.log /dev/mtd$ln
+	mount -t jffs2  /dev/$logfs_mtd /logs
+
+fi
+sync
+/usr/exe/backdefault.sh
+sync
+
+## check and restore linux accounts
+## ckuser.sh must run before cfgetc.sh
+/usr/exe/ckuser.sh
+
+/usr/exe/cfgetc.sh

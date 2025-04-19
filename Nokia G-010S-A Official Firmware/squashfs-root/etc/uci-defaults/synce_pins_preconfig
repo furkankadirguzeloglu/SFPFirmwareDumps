@@ -1,0 +1,32 @@
+#!/bin/sh
+# Copyright (C) 2011 OpenWrt.org
+# Copyright (C) 2016 Lantiq Beteiligungs-GmbH Co. KG
+
+. /lib/functions/uci-defaults.sh
+. /lib/falcon.sh
+
+ucidef_pin_add() {
+	local name=$1
+	local pin=$2
+	local restriction=$3
+	local section
+
+	section=$(uci add synce_pins pin)
+	uci set "synce_pins.${section}.name=${name}"
+	uci set "synce_pins.${section}.pin=${pin}"
+	[ -z "$restriction" ] || uci set "synce_pins.${section}.restriction=${restriction}"
+}
+
+# uci has errors if the file does not exist:
+touch /etc/config/synce_pins
+
+case $(falcon_board_name) in
+easy98035sync*)
+	ucidef_pin_add "nGPIO_ExtPLL_LD" "43"
+	ucidef_pin_add "nGPIO_ExtPLL_CF" "44"
+	;;
+*)
+	;;
+esac
+
+uci commit synce_pins

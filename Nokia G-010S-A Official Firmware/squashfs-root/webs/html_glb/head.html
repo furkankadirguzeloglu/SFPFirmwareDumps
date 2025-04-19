@@ -1,0 +1,39 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'/>
+    <script src="/js_glb/jquery-1.6.1.min.js"></script>
+    <script src="/js_glb/global.js"></script>
+    <script src="/js_glb/string_extend.js"></script>
+
+    <link rel="stylesheet" href='../css_glb/main.css' type='text/css'/>
+    <link rel="stylesheet" href='../css_glb/ont.css' type='text/css'/>
+
+</head>
+
+<script language=javascript>
+    $(document).ajaxSend(function( event, request, settings ) 
+        {
+            if (settings.type == "POST") 
+            {                                   
+                if (settings.data === undefined || settings.data === "") 
+                {
+                    settings.data = 'csrf_token=<% csrf_token %>';
+                    request.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
+                }
+                else
+                {
+                    if ((settings.contentType || "").indexOf("application/x-www-form-urlencoded") < 0)
+                    {
+                        alert("Error Content-Type:" + settings.contentType);
+                        request.abort();                        
+                    }
+
+                    if (settings.data.indexOf("csrf_token") < 0)
+                    {
+                        settings.data += '&csrf_token=<% csrf_token %>'
+                    }                    
+                }                                    
+            }             
+        });
+</script>
+

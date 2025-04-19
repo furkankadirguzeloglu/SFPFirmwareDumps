@@ -1,0 +1,184 @@
+html, body, div, ul, li, span, p, a img, form, frameset, frame,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body {
+	font-family: arial, serif, fixedsys;
+}
+
+td {
+	vertical-align: middle;
+}
+
+ol, ul {
+	list-style: none;
+	text-align: center;	
+}
+
+div {
+        margin-left: 0;
+	vertical-align: top;
+}
+
+h1 {
+	font-weight: normal;
+	font-size: 40px;
+	font-weight: normal;
+	text-transform: uppercase;
+	float: left;
+	margin: 20px 0 100px 10px;
+}
+
+h1 span {
+	font-size: 13px;
+	display: block;
+	padding-left: 4px;
+}
+
+.tabs {
+	width: 1000px;
+	float: none;
+	list-style: none;
+	position: relative;
+	margin: 0 0 0 0;
+	text-align: center;
+	padding: 0 0 0 0;
+}
+
+.tabs li {
+	float: left;
+	display: block;
+}
+
+.tabs input[type="radio"] {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+}
+
+.tabs label {
+	display: block;
+	padding: 14px 25px;
+	border-radius: 2px 2px 0 0;
+	font-size: 13px;
+	font-weight: bold;
+	text-transform: uppercase;
+	background: #CECECE;
+	cursor: pointer;
+	position: relative;
+	top: 4px;
+	border: 1px solid #888888;
+	-moz-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	-webkit-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+}
+
+.tabs label:hover {
+	background: #888888;
+	color: #990000;
+}
+
+.tabs .tab-content {
+	z-index: 2;
+	display: none;
+	overflow: hidden;
+	width: 100%;
+	font-size: 14px;
+	line-height: 25px;
+	padding: 20px 20px;
+	position: absolute;
+	top: 53px;
+	left: 0;
+	background: #efefef;
+}
+
+.tabs [id^="tab"]:checked + label {
+	//top: 0;
+	padding-top: 17px;
+	background: #EDECED;
+}
+
+.tabs [id^="tab"]:checked ~ [id^="tab-content"] {
+	display: block;
+}
+
+p.link {
+	clear: both;
+	margin: 380px 0 0 15px;
+}
+
+.x_table {
+	border-collapse: collapse;
+	border: 1px solid #888888;
+	font-size: 14px;
+	text-align: center;
+	width:100%;
+	table-layout: fixed;
+}
+
+.x_table .x_tr1 {
+	height: 45px;
+	vertical-align: middle;
+	font-weight: bold;
+	background: #cecece;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.x_table .x_tr2 {
+	height: 24px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.x_table th {
+	border: 1px solid #888888;
+	background-color: #cccccc;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.x_table .x_td0 {
+	border: 1px solid #aaaaaa;
+	background-color: #cecece;
+	vertical-align: middle;
+	text-align: center;
+	word-wrap: break-word;
+	padding: 0 10px;
+}
+
+.x_table .x_td1 {
+        border: 1px solid #aaaaaa;
+        background-color: #cecece;
+        vertical-align: middle;
+        text-align: left;
+	padding-left: 10px;
+	width:200px;
+}
+
+.x_table .x_td2 
+{
+	border: 1px solid #aaaaaa;
+	background-color: #efefef;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.x_table th, .x_table td {
+	text-align: center;
+}
+
+.btn-div
+{
+	text-align: right;
+}
